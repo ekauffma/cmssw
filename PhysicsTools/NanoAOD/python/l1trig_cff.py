@@ -49,7 +49,7 @@ l1TauReducedVars = cms.PSet(
 l1MuonReducedVars = cms.PSet(
     l1P3Vars,
     hwQual = Var("hwQual()",int,doc="hardware qual"),
-    hwCharge = Var("hwCharge()","int16",doc="hardware charge"), 
+    hwCharge = Var("hwCharge()","int16",doc="hardware charge"),
     etaAtVtx = Var("etaAtVtx()",float,precision=l1_float_precision_,doc="eta estimated at the vertex"),
     phiAtVtx = Var("phiAtVtx()",float,precision=l1_float_precision_,doc="phi estimated at the vertex"),
     ptUnconstrained = Var("ptUnconstrained()",float,precision=l1_float_precision_,doc="pt when not constrained to the beamspot"),
@@ -59,11 +59,11 @@ l1MuonReducedVars = cms.PSet(
 l1MuTable = cms.EDProducer("SimpleTriggerL1MuonFlatTableProducer",
     src = cms.InputTag("gmtStage2Digis","Muon"),
     minBX = cms.int32(-2),
-    maxBX = cms.int32(2),                           
-    cut = cms.string(""), 
+    maxBX = cms.int32(2),
+    cut = cms.string(""),
     name= cms.string("L1Mu"),
     doc = cms.string(""),
-    extension = cms.bool(False), 
+    extension = cms.bool(False),
     variables = cms.PSet(l1ObjVars,
                          hwCharge = Var("hwCharge()","int16",doc="Charge (can be 0 if the charge measurement was not valid)"),
                          hwChargeValid = Var("hwChargeValid()","int16",doc=""),
@@ -87,8 +87,8 @@ l1MuTable = cms.EDProducer("SimpleTriggerL1MuonFlatTableProducer",
 l1JetTable = cms.EDProducer("SimpleTriggerL1JetFlatTableProducer",
     src = cms.InputTag("caloStage2Digis","Jet"),
     minBX = cms.int32(-2),
-    maxBX = cms.int32(2),                           
-    cut = cms.string(""), 
+    maxBX = cms.int32(2),
+    cut = cms.string(""),
     name= cms.string("L1Jet"),
     doc = cms.string(""),
     extension = cms.bool(False),
@@ -106,8 +106,8 @@ l1JetTable = cms.EDProducer("SimpleTriggerL1JetFlatTableProducer",
 l1TauTable = cms.EDProducer("SimpleTriggerL1TauFlatTableProducer",
     src = cms.InputTag("caloStage2Digis","Tau"),
     minBX = cms.int32(-2),
-    maxBX = cms.int32(2),                           
-    cut = cms.string(""), 
+    maxBX = cms.int32(2),
+    cut = cms.string(""),
     name= cms.string("L1Tau"),
     doc = cms.string(""),
     extension = cms.bool(False), # this is the main table for L1 EGs
@@ -124,11 +124,11 @@ l1TauTable = cms.EDProducer("SimpleTriggerL1TauFlatTableProducer",
 l1EtSumTable = cms.EDProducer("SimpleTriggerL1EtSumFlatTableProducer",
     src = cms.InputTag("caloStage2Digis","EtSum"),
     minBX = cms.int32(-2),
-    maxBX = cms.int32(2),                           
-    cut = cms.string(""), 
+    maxBX = cms.int32(2),
+    cut = cms.string(""),
     name= cms.string("L1EtSum"),
     doc = cms.string(""),
-    extension = cms.bool(False), 
+    extension = cms.bool(False),
     variables = cms.PSet(l1PtVars,
                          hwPt = Var("hwPt()",int,doc="hardware pt"),
                          hwPhi = Var("hwPhi()",int,doc="hardware phi"),
@@ -139,11 +139,11 @@ l1EtSumTable = cms.EDProducer("SimpleTriggerL1EtSumFlatTableProducer",
 l1EGTable = cms.EDProducer("SimpleTriggerL1EGFlatTableProducer",
     src = cms.InputTag("caloStage2Digis","EGamma"),
     minBX = cms.int32(-2),
-    maxBX = cms.int32(2),                           
-    cut = cms.string(""), 
+    maxBX = cms.int32(2),
+    cut = cms.string(""),
     name= cms.string("L1EG"),
     doc = cms.string(""),
-    extension = cms.bool(False), 
+    extension = cms.bool(False),
     variables = cms.PSet(l1CaloObjVars,
                          rawEt = Var("rawEt()","int16",doc="raw et"),
                          isoEt = Var("isoEt()","int16",doc="iso et"),
@@ -154,11 +154,22 @@ l1EGTable = cms.EDProducer("SimpleTriggerL1EGFlatTableProducer",
                      )
 )
 
-l1TablesTask = cms.Task(l1EGTable,l1EtSumTable,l1TauTable,l1JetTable,l1MuTable)
+l1CICADAAnomalyScoreTable = cms.EDProducer("SimpleTriggerL1CICADAAnomalyScoreFlatTableProducer",
+    src = cms.InputTag("caloLayer1Digis","CICADAScore"),
+    minBX = cms.int32(-2),
+    maxBX = cms.int32(2),
+    cut = cms.string(""),
+    name = cms.string("L1CICADAAnomalyScore"),
+    doc = cms.string(""),
+    extension = cms.bool(False),
+    variables = cms.PSet(score = Var("score()", float, doc=""), )
+)
+
+l1TablesTask = cms.Task(l1EGTable,l1EtSumTable,l1TauTable,l1JetTable,l1MuTable,l1CICADAAnomalyScoreTable)
 
 def setL1NanoToReduced(process):
     """
-    sets the L1 objects only have reduced information which is necessary 
+    sets the L1 objects only have reduced information which is necessary
     for central nano
     """
     #reduce the variables to the core variables
@@ -168,12 +179,12 @@ def setL1NanoToReduced(process):
     process.l1JetTable.variables = cms.PSet(l1JetReducedVars)
     process.l1TauTable.variables = cms.PSet(l1TauReducedVars)
     process.l1EtSumTable.variables = cms.PSet(l1EtSumReducedVars)
-   
+
     #apply cuts
     process.l1EGTable.cut="pt>=10"
     process.l1TauTable.cut="pt>=24"
     process.l1JetTable.cut="pt>=30"
     process.l1MuTable.cut="pt>=3 && hwQual>=8"
     process.l1EtSumTable.cut="(getType==8 || getType==1 || getType==2 || getType==3)"
-    
+
     return process

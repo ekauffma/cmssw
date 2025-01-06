@@ -26,6 +26,7 @@ l1JetScoutingTable = l1JetTable.clone(src=cms.InputTag("gtStage2DigisScouting","
 l1EGScoutingTable = l1EGTable.clone(src=cms.InputTag("gtStage2DigisScouting","EGamma"))
 l1TauScoutingTable = l1TauTable.clone(src=cms.InputTag("gtStage2DigisScouting","Tau"))
 l1EtSumScoutingTable = l1EtSumTable.clone(src=cms.InputTag("gtStage2DigisScouting","EtSum"))
+l1CICADAAnomalyScoreScoutingTable = l1CICADAAnomalyScoreTable.clone(src=cms.InputTag("caloLayer1Digis","CICADAScore"))
 
 #reduce the variables to the core variables as only these are available in gtStage2Digis
 l1EGScoutingTable.variables = cms.PSet(l1EGReducedVars)
@@ -40,7 +41,8 @@ unpackedPatTriggerScouting = unpackedPatTrigger.clone(patTriggerObjectsStandAlon
 triggerObjectTableScouting = triggerObjectTable.clone(src="unpackedPatTriggerScouting")
 
 triggerTask = cms.Task(
-    gtStage2DigisScouting, l1MuScoutingTable, l1EGScoutingTable, l1TauScoutingTable, l1JetScoutingTable, l1EtSumScoutingTable, 
+    gtStage2DigisScouting, l1MuScoutingTable, l1EGScoutingTable, l1TauScoutingTable, l1JetScoutingTable, l1EtSumScoutingTable,
+    l1CICADAAnomalyScoreScoutingTable,
     unpackedPatTriggerScouting,triggerObjectTableScouting,l1bitsScouting
 )
 triggerSequence = cms.Sequence(L1TRawToDigi+patTriggerScouting+selectedPatTriggerScouting+slimmedPatTriggerScouting+cms.Sequence(triggerTask))
