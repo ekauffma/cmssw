@@ -1,7 +1,4 @@
 <lcgdict>
-  <class name="l1t::CICADAAnomalyScore"/>
-  <class name="edm::Wrapper<l1t::CICADAAnomalyScore>"/>
-
   <class name="l1t::L1Candidate" ClassVersion="12">
    <version ClassVersion="12" checksum="939575486"/>
    <version ClassVersion="11" checksum="2395983446"/>
@@ -333,6 +330,12 @@
   <class name="std::vector<l1t::TkJetWord>"/>
   <class name="edm::Wrapper<std::vector<l1t::TkJetWord> >"/>
   <class name="edm::Wrapper<l1t::TkJetWordCollection>"/>
-  <class name="std::bitset<70>"/>
+      <class name="std::bitset<70>"/>
+
+  <class name="l1t::CICADAAnomalyScore"/>
+  <class name="edm::Wrapper<l1t::CICADAAnomalyScore>"/>
+  <class name="std::vector<l1t::CICADAAnomalyScore>"/>
+  <class name="BXVector<l1t::CICADAAnomalyScore>"/>
+  <class name="edm::Wrapper<BXVector<l1t::CICADAAnomalyScore>>"/>
 
 </lcgdict>
